@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annaba Veterinary Clinics</title>
+    <style>
+        :root {
+            --primary-color: #2E7D32;
+            --secondary-color: #4CAF50;
+            --accent-color: #8BC34A;
+            --vet-color: #3F51B5;
+            --owner-color: #FF9800;
+            --text-dark: #333;
+            --text-medium: #555;
+            --text-light: #777;
+            --background-light: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --modal-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            --error-color: #f44336;
+            --success-color: #4CAF50;
+            --warning-color: #FF9800;
+            --info-color: #2196F3;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 0.5rem 0 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .auth-btn {
+            background-color: rgba(255,255,255,0.2);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .auth-btn:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        header p {
+            margin: 0.5rem 0 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--modal-shadow);
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-medium);
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: border 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(139, 195, 74, 0.2);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 1px dashed #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-label:hover {
+            border-color: var(--accent-color);
+            background-color: rgba(139, 195, 74, 0.05);
+        }
+        
+        .file-upload-input {
+            display: none;
+        }
+        
+        .file-name {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+        
+        .user-type-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .user-type-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            background: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .user-type-btn.active {
+            border-color: var(--primary-color);
+            background-color: rgba(46, 125, 50, 0.1);
+        }
+        
+        .user-type-btn.vet.active {
+            border-color: var(--vet-color);
+            background-color: rgba(63, 81, 181, 0.1);
+        }
+        
+        .user-type-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 6px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .submit-btn:hover {
+            background-color: #1B5E20;
+        }
+        
+        .submit-btn.vet {
+            background-color: var(--vet-color);
+        }
+        
+        .submit-btn.vet:hover {
+            background-color: #303F9F;
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .toggle-form {
+            color: var(--primary-color);
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .toggle-form.vet {
+            color: var(--vet-color);
+        }
+        
+        .forgot-password {
+            display: block;
+            text-align: right;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        /* Clinic List Styles */
+        .search-box {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        
+        #searchInput {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: border 0.3s ease;
+        }
+        
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(139, 195, 74, 0.2);
+        }
+        
+        .clinic-list {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .clinic-card {
+            padding: 1.25rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .clinic-card:hover {
+            background-color: rgba(76, 175, 80, 0.05);
+        }
+        
+        .clinic-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .clinic-info {
+            color: var(--text-medium);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .clinic-info p {
+            margin: 0.3rem 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .clinic-info i {
+            margin-right: 0.5rem;
+            color: var(--accent-color);
+            min-width: 1rem;
+            text-align: center;
+        }
+        
+        .action-btn {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .action-btn:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Chat Page Styles */
+        #chatPage {
+            display: none;
+            height: 100vh;
+            background-color: var(--background-light);
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .back-btn {
+            background: none;
+            color: var(--white);
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-right: 1rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .chat-title {
+            margin: 0;
+            flex-grow: 1;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 60px);
+        }
+        
+        .messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            background-color: #e5ddd5;
+            background-image: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8));
+        }
+        
+        .message {
+            max-width: 80%;
+            margin-bottom: 1rem;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            position: relative;
+            word-wrap: break-word;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .received {
+            background: var(--white);
+            align-self: flex-start;
+            border-radius: 0 12px 12px 12px;
+            margin-left: 8px;
+        }
+        
+        .sent {
+            background: #dcf8c6;
+            align-self: flex-end;
+            border-radius: 12px 0 12px 12px;
+            margin-right: 8px;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+            text-align: right;
+        }
+        
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 4px;
+            display: block;
+        }
+        
+        .message-status {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            margin-left: 8px;
+        }
+        
+        .chat-input {
+            padding: 1rem;
+            background: var(--white);
+            border-top: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+        }
+        
+        #messageInput, #vetMessageInput {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            outline: none;
+            font-size: 0.95rem;
+            transition: border 0.3s ease;
+        }
+        
+        #messageInput:focus, #vetMessageInput:focus {
+            border-color: var(--accent-color);
+        }
+        
+        .send-btn {
+            background: var(--secondary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            margin-left: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .send-btn:hover {
+            background: var(--primary-color);
+            transform: scale(1.05);
+        }
+        
+        .typing-indicator {
+            background: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            display: inline-block;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .welcome-message {
+            text-align: center;
+            color: var(--text-medium);
+            margin-top: 40%;
+            font-size: 0.95rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.7);
+            border-radius: 12px;
+            max-width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .vet-response-controls {
+            display: none;
+            padding: 1rem;
+            background: var(--white);
+            border-top: 1px solid #ddd;
+        }
+        
+        .vet-response-btn {
+            background: var(--vet-color);
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .vet-response-btn:hover {
+            background: #303F9F;
+        }
+        
+        /* Message thread styles */
+        .message-thread {
+            margin-top: 8px;
+            margin-left: 20px;
+            border-left: 2px solid rgba(0,0,0,0.1);
+            padding-left: 12px;
+        }
+        
+        .reply-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 0.7rem;
+            cursor: pointer;
+            padding: 0;
+            margin-top: 4px;
+            display: inline-block;
+        }
+        
+        .reply-btn:hover {
+            text-decoration: underline;
+        }
+        
+        .reply-preview {
+            font-size: 0.8rem;
+            color: var(--text-medium);
+            padding: 6px 8px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            border-left: 2px solid var(--accent-color);
+        }
+        
+        .replying-to {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 4px;
+            display: block;
+        }
+        
+        .replying-to strong {
+            color: var(--text-medium);
+        }
+        
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
+        
+        .toast {
+            background: #333;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+        }
+        
+        .toast-error {
+            background: var(--error-color);
+        }
+        
+        .toast-success {
+            background: var(--success-color);
+        }
+        
+        .toast-warning {
+            background: var(--warning-color);
+        }
+        
+        .toast-info {
+            background: var(--info-color);
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        /* Vet inbox page */
+        #vetInboxPage {
+            display: none;
+            height: 100vh;
+            background-color: var(--background-light);
+        }
+        
+        .vet-inbox {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .conversation-card {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .conversation-card:hover {
+            background-color: rgba(76, 175, 80, 0.05);
+        }
+        
+        .conversation-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-name {
+            font-weight: 500;
+        }
+        
+        .last-time {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .last-message {
+            font-size: 0.9rem;
+            color: var(--text-medium);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .user-controls {
+                gap: 0.5rem;
+            }
+            
+            .auth-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            .user-profile span {
+                display: none;
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Toast container -->
+    <div id="toastContainer" class="toast-container"></div>
+    
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Welcome</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" data-tab="login">Login</div>
+                    <div class="auth-tab" data-tab="signup">Sign Up</div>
+                </div>
+                
+                <div id="loginForm" class="auth-form active">
+                    <div class="user-type-selector">
+                        <button class="user-type-btn owner active" data-type="owner">
+                            <i class="fas fa-user"></i>
+                            Pet Owner
+                        </button>
+                        <button class="user-type-btn vet" data-type="vet">
+                            <i class="fas fa-user-md"></i>
+                            Veterinarian
+                        </button>
+                    </div>
+                    
+                    <form id="ownerLoginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required>
+                            <i class="fas fa-eye password-toggle" id="toggleLoginPassword"></i>
+                        </div>
+                        <span class="forgot-password" id="forgotPassword">Forgot password?</span>
+                        <button type="submit" class="submit-btn">Login</button>
+                    </form>
+                    
+                    <form id="vetLoginForm" class="auth-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="vetLoginEmail">Email</label>
+                            <input type="email" id="vetLoginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vetLoginPassword">Password</label>
+                            <input type="password" id="vetLoginPassword" required>
+                            <i class="fas fa-eye password-toggle" id="toggleVetLoginPassword"></i>
+                        </div>
+                        <span class="forgot-password" id="vetForgotPassword">Forgot password?</span>
+                        <button type="submit" class="submit-btn vet">Login</button>
+                    </form>
+                    
+                    <div class="form-footer">
+                        Don't have an account? <span class="toggle-form">Sign up</span>
+                    </div>
+                </div>
+                
+                <div id="signupForm" class="auth-form">
+                    <div class="user-type-selector">
+                        <button class="user-type-btn owner active" data-type="owner">
+                            <i class="fas fa-user"></i>
+                            Pet Owner
+                        </button>
+                        <button class="user-type-btn vet" data-type="vet">
+                            <i class="fas fa-user-md"></i>
+                            Veterinarian
+                        </button>
+                    </div>
+                    
+                    <form id="ownerSignupForm">
+                        <div class="form-group">
+                            <label for="signupName">Full Name</label>
+                            <input type="text" id="signupName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupEmail">Email</label>
+                            <input type="email" id="signupEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" id="signupPassword" required>
+                            <i class="fas fa-eye password-toggle" id="toggleSignupPassword"></i>
+                            <small class="password-hint">Minimum 8 characters with uppercase, lowercase and number</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupConfirmPassword">Confirm Password</label>
+                            <input type="password" id="signupConfirmPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupPhone">Phone Number</label>
+                            <input type="tel" id="signupPhone">
+                        </div>
+                        <button type="submit" class="submit-btn">Create Account</button>
+                    </form>
+                    
+                    <form id="vetSignupForm" class="auth-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="vetSignupName">Full Name</label>
+                            <input type="text" id="vetSignupName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vetSignupEmail">Email</label>
+                            <input type="email" id="vetSignupEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vetSignupPassword">Password</label>
+                            <input type="password" id="vetSignupPassword" required>
+                            <i class="fas fa-eye password-toggle" id="toggleVetSignupPassword"></i>
+                            <small class="password-hint">Minimum 8 characters with uppercase, lowercase and number</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="vetSignupConfirmPassword">Confirm Password</label>
+                            <input type="password" id="vetSignupConfirmPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vetSignupPhone">Phone Number</label>
+                            <input type="tel" id="vetSignupPhone">
+                        </div>
+                        <div class="form-group">
+    <label for="vetSignupClinic">Select Clinic</label>
+    <select id="vetSignupClinic" required>
+        <option value="">Choose a clinic</option>
+        <option value="healthyvet">Healthy Vet Clinic</option>
+        <option value="animalplanet">Animal Planet Veterinary</option>
+        <option value="drdziri">Dr. Dziri Veterinary Cabinet</option>
+    </select>
+</div>
+
+                        <div class="form-group">
+                            <label for="vetSignupSpecialty">Specialty</label>
+                            <select id="vetSignupSpecialty" required>
+                                <option value="">Select specialty</option>
+                                <option value="General Practice">General Practice</option>
+                                <option value="Surgery">Surgery</option>
+                                <option value="Dermatology">Dermatology</option>
+                                <option value="Emergency Care">Emergency Care</option>
+                                <option value="Exotic Animals">Exotic Animals</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Diploma/Certification</label>
+                            <div class="file-upload">
+                                <label for="vetDiploma" class="file-upload-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    Upload Diploma (PDF/Image)
+                                </label>
+                                <input type="file" id="vetDiploma" class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png">
+                                <div id="diplomaFileName" class="file-name">No file selected</div>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn vet">Register as Vet</button>
+                    </form>
+                    
+                    <div class="form-footer">
+                        Already have an account? <span class="toggle-form">Login</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Reset Password</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="forgotPasswordForm">
+                    <div class="form-group">
+                        <label for="forgotEmail">Email Address</label>
+                        <input type="email" id="forgotEmail" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Reset Link</button>
+                </form>
+                <div class="form-footer">
+                    Remembered your password? <span class="toggle-forgot-password">Back to login</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clinic Listing Page -->
+    <div id="listingPage">
+        <header>
+            <div class="nav-container">
+                <div></div> <!-- Empty div for spacing -->
+                <div class="user-controls">
+                    <div id="userProfile" class="user-profile" style="display: none;">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <span id="userName">User</span>
+                    </div>
+                    <button id="authButton" class="auth-btn">
+                        <i class="fas fa-user"></i> Login/Signup
+                    </button>
+                    <button id="vetInboxButton" class="auth-btn" style="display: none;">
+                        <i class="fas fa-inbox"></i> My Conversations
+                    </button>
+                </div>
+            </div>
+            <h1>Veterinary Clinics in Annaba</h1>
+            <p>Find clinics near your location</p>
+        </header>
+        
+        <div class="container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search clinics by name, service or area...">
+            </div>
+            
+            <div class="clinic-list" id="clinicsContainer">
+                <!-- Clinic cards will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Page (initially hidden) -->
+    <div id="chatPage">
+        <div class="chat-header">
+            <button class="back-btn" id="backButton">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 class="chat-title" id="chatClinicName">Clinic Name</h2>
+        </div>
+        
+        <div class="chat-container">
+            <div class="messages" id="messageContainer">
+                <div class="welcome-message">
+                    <p>You're now chatting with <span id="vetName"></span></p>
+                    <p>Describe your pet's issue to get started</p>
+                </div>
+            </div>
+            
+            <!-- Typing indicator -->
+            <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                <span id="typingName"></span> is typing...
+            </div>
+            
+            <!-- Vet response controls -->
+            <div class="vet-response-controls" id="vetResponseControls">
+                <div class="chat-input">
+                    <div id="vetReplyPreview" class="reply-preview" style="display: none;"></div>
+                    <input type="text" id="vetMessageInput" placeholder="Type your response...">
+                    <button class="send-btn" id="vetSendButton">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <button class="send-btn" id="vetCancelReplyBtn" style="display: none; background: #ccc; margin-left: 0.5rem;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Regular user chat input -->
+            <div class="chat-input" id="userChatInput">
+                <div id="replyPreview" class="reply-preview" style="display: none;"></div>
+                <input type="text" id="messageInput" placeholder="Type your message...">
+                <button class="send-btn" id="sendButton">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+                <button class="send-btn" id="cancelReplyBtn" style="display: none; background: #ccc; margin-left: 0.5rem;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Vet Inbox Page -->
+    <div id="vetInboxPage" style="display: none;">
+        <div class="chat-header">
+            <button class="back-btn" id="backToClinicsButton">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 class="chat-title">Your Conversations</h2>
+        </div>
+        <div class="container">
+            <div class="vet-inbox">
+                <div id="conversationsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// User state
+let currentUser = null;
+let currentClinic = null;
+let currentConversation = null;
+let conversations = {};
+let replyingTo = null;
+let typingTimer;
+
+// Clinic data (without individual vets)
+const clinics = [
+    {
+        id: "veterinaryclinic",
+        name: "Veterinary Clinic",
+        address: "Cité 100 Logts , Berrahel , Annaba",
+        phone: "+213 7 72 28 21 95",
+        services: ["General care", "vaccinations"],
+        hours: "10:00 AM - 6:00 PM (Sat-Sat)"
+    },
+    {
+        id: "animalplanet",
+        name: "Animal Planet Veterinary",
+        address: "Sidi Achour, Annaba",
+        phone: "+213 5 55 12 34 56",
+        services: ["Exotic pets", "birds", "dermatology"],
+        hours: "9:00 AM - 7:00 PM (Mon-Sat)"
+    },
+    
+];
+
+// Vets data
+const vets = [
+    {
+        id: "vet1",
+        name: "Dr. Derradji",
+        email: "vet1@example.com",
+        password: "vet123",
+        clinicId: "veterinaryclinic",
+        specialty: "General Practice"
+    },
+    {
+        id: "vet2",
+        name: "Dr. Mameria",
+        email: "vet2@example.com",
+        password: "vet123",
+        clinicId: "animaleplanet",
+        specialty: "Exotic Animals"
+    }
+];
+
+// Create demo conversations if none exist
+function createDemoConversations() {
+    const savedConversations = localStorage.getItem('conversations');
+    if (!savedConversations || Object.keys(JSON.parse(savedConversations)).length === 0) {
+        const demoConversations = {
+            "user1_healthyvet": {
+                clinicId: "healthyvet",
+                ownerName: "Ali Benmoussa",
+                messages: [
+                    {
+                        id: "msg1",
+                        sender: "user",
+                        senderId: "user1",
+                        senderName: "Ali Benmoussa",
+                        recipientId: "healthyvet",
+                        text: "Hello, my dog has been vomiting since yesterday",
+                        timestamp: new Date(Date.now() - 3600000).toISOString()
+                    },
+                    {
+                        id: "msg2",
+                        sender: "clinic",
+                        senderId: "healthyvet",
+                        senderName: "Healthy Vet Clinic",
+                        recipientId: "user1",
+                        text: "Please bring him in for an examination",
+                        timestamp: new Date(Date.now() - 1800000).toISOString()
+                    }
+                ]
+            },
+            "user2_animalplanet": {
+                clinicId: "animalplanet",
+                ownerName: "Leila Boukari",
+                messages: [
+                    {
+                        id: "msg3",
+                        sender: "user",
+                        senderId: "user2",
+                        senderName: "Leila Boukari",
+                        recipientId: "animalplanet",
+                        text: "My parrot isn't eating well",
+                        timestamp: new Date(Date.now() - 7200000).toISOString()
+                    },
+                    {
+                        id: "msg4",
+                        sender: "clinic",
+                        senderId: "animalplanet",
+                        senderName: "Animal Planet Veterinary",
+                        recipientId: "user2",
+                        text: "We specialize in birds. Please bring him in tomorrow.",
+                        timestamp: new Date(Date.now() - 3600000).toISOString()
+                    }
+                ]
+            }
+        };
+        localStorage.setItem('conversations', JSON.stringify(demoConversations));
+        conversations = demoConversations;
+    } else {
+        conversations = JSON.parse(savedConversations);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Page elements
+    const listingPage = document.getElementById('listingPage');
+    const chatPage = document.getElementById('chatPage');
+    const vetInboxPage = document.getElementById('vetInboxPage');
+    const backButton = document.getElementById('backButton');
+    const backToClinicsButton = document.getElementById('backToClinicsButton');
+    const chatClinicName = document.getElementById('chatClinicName');
+    const messageContainer = document.getElementById('messageContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const vetMessageInput = document.getElementById('vetMessageInput');
+    const vetSendButton = document.getElementById('vetSendButton');
+    const vetInboxButton = document.getElementById('vetInboxButton');
+    
+    // Auth elements
+    const authModal = document.getElementById('authModal');
+    const authButton = document.getElementById('authButton');
+    const userProfile = document.getElementById('userProfile');
+    const userName = document.getElementById('userName');
+    const userAvatar = document.getElementById('userAvatar');
+    const closeModal = document.querySelector('.close-modal');
+    const authTabs = document.querySelectorAll('.auth-tab');
+    const toggleForms = document.querySelectorAll('.toggle-form');
+    const userTypeBtns = document.querySelectorAll('.user-type-btn');
+    
+    // Initialize the app
+    checkLoginStatus();
+    createDemoConversations();
+    renderClinicList();
+
+    // Event listeners
+    backButton.addEventListener('click', backToList);
+    backToClinicsButton.addEventListener('click', backToClinics);
+    sendButton.addEventListener('click', sendMessage);
+    vetSendButton.addEventListener('click', sendVetMessage);
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendMessage();
+    });
+    vetMessageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendVetMessage();
+    });
+    
+    // Auth modal functionality
+    authButton.addEventListener('click', () => {
+        authModal.style.display = 'flex';
+    });
+    
+    closeModal.addEventListener('click', () => {
+        authModal.style.display = 'none';
+    });
+    
+    window.addEventListener('click', (e) => {
+        if (e.target === authModal) {
+            authModal.style.display = 'none';
+        }
+    });
+    
+    // Switch between login and signup tabs
+    authTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            authTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            
+            document.getElementById(`${tab.dataset.tab}Form`).classList.add('active');
+        });
+    });
+    
+    // Toggle between forms
+    toggleForms.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            if (toggle.textContent === 'Sign up') {
+                authTabs[1].click();
+            } else {
+                authTabs[0].click();
+            }
+        });
+    });
+    
+    // User type selection
+    userTypeBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const type = this.dataset.type;
+            
+            userTypeBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show the appropriate form
+            document.getElementById('ownerLoginForm').style.display = type === 'owner' ? 'block' : 'none';
+            document.getElementById('vetLoginForm').style.display = type === 'vet' ? 'block' : 'none';
+            document.getElementById('ownerSignupForm').style.display = type === 'owner' ? 'block' : 'none';
+            document.getElementById('vetSignupForm').style.display = type === 'vet' ? 'block' : 'none';
+        });
+    });
+    
+    // Vet inbox button
+    vetInboxButton.addEventListener('click', showVetInbox);
+    
+    // Form submissions
+    document.getElementById('ownerLoginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        loginUser(email, password, false);
+    });
+    
+    document.getElementById('vetLoginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('vetLoginEmail').value;
+        const password = document.getElementById('vetLoginPassword').value;
+        
+        // Check vet credentials
+        const vet = vets.find(v => v.email === email && v.password === password);
+        if (vet) {
+            loginUser(email, password, true, vet);
+        } else {
+            showToast("Invalid vet credentials", "error");
+        }
+    });
+    
+    document.getElementById('ownerSignupForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('signupName').value;
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const phone = document.getElementById('signupPhone').value;
+        
+        signupUser(name, email, password, phone, false);
+    });
+    
+    document.getElementById('vetSignupForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('vetSignupName').value;
+        const email = document.getElementById('vetSignupEmail').value;
+        const password = document.getElementById('vetSignupPassword').value;
+        const phone = document.getElementById('vetSignupPhone').value;
+        const clinic = document.getElementById('vetSignupClinic').value;
+        const specialty = document.getElementById('vetSignupSpecialty').value;
+        
+        // In a real app, you would send this to your backend
+        const newVet = {
+            id: 'vet-' + Date.now().toString(),
+            name,
+            email,
+            password,
+            phone,
+            clinicId: clinic,
+            specialty
+        };
+        
+        signupUser(name, email, password, phone, true, newVet);
+    });
+    
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll('.clinic-card').forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.style.display = text.includes(term) ? '' : 'none';
+        });
+    });
+    
+    // Functions
+    function renderClinicList() {
+        const container = document.getElementById('clinicsContainer');
+        container.innerHTML = '';
+        
+        clinics.forEach(clinic => {
+            const card = document.createElement('div');
+            card.className = 'clinic-card';
+            card.innerHTML = `
+                <h3>${clinic.name}</h3>
+                <div class="clinic-info">
+                    <p><i class="fas fa-map-marker-alt"></i> ${clinic.address}</p>
+                    <p><i class="fas fa-phone"></i> ${clinic.phone}</p>
+                    <p><i class="fas fa-stethoscope"></i> Services: ${clinic.services.join(", ")}</p>
+                    <p><i class="fas fa-clock"></i> Hours: ${clinic.hours}</p>
+                </div>
+                <button class="action-btn start-chat" data-clinic="${clinic.id}">
+                    <i class="fas fa-comment-dots"></i> Contact Clinic
+                </button>
+            `;
+            
+            card.querySelector('.start-chat').addEventListener('click', () => {
+                openChat(clinic.id);
+            });
+            
+            container.appendChild(card);
+        });
+    }
+
+    function openChat(clinicId) {
+        if (!currentUser) {
+            showToast("Please login to start chatting.", "error");
+            authModal.style.display = 'flex';
+            return;
+        }
+        
+        // Vets can't start new chats from clinic list
+        if (currentUser.isVet) {
+            showToast("Vets can only respond to existing conversations.", "error");
+            return;
+        }
+        
+        currentClinic = clinics.find(c => c.id === clinicId);
+        if (!currentClinic) return;
+        
+        // Update UI
+        chatClinicName.textContent = currentClinic.name;
+        
+        // Generate conversation key (owner_clinic)
+        const conversationKey = `${currentUser.id}_${currentClinic.id}`;
+        
+        currentConversation = conversationKey;
+        
+        // Clear and show welcome message
+        messageContainer.innerHTML = `
+            <div class="welcome-message">
+                <p>You're now chatting with ${currentClinic.name}</p>
+                <p>Describe your pet's issue to get started</p>
+            </div>
+        `;
+        
+        // Show appropriate input area
+        document.getElementById('userChatInput').style.display = 'flex';
+        document.getElementById('vetResponseControls').style.display = 'none';
+        
+        // Load existing messages
+        if (conversations[conversationKey] && conversations[conversationKey].messages) {
+            conversations[conversationKey].messages.forEach(msg => {
+                addMessage(
+                    msg.sender === 'user' ? 'sent' : 'received',
+                    msg.text,
+                    msg.senderName,
+                    msg.id
+                );
+            });
+        }
+        
+        // Switch to chat view
+        listingPage.style.display = 'none';
+        vetInboxPage.style.display = 'none';
+        chatPage.style.display = 'block';
+    }
+
+    function addMessage(type, text, senderName, id = null) {
+        const welcome = messageContainer.querySelector('.welcome-message');
+        if (welcome) welcome.remove();
+        
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        
+        // Generate ID if not provided
+        if (!id) {
+            id = 'msg-' + Date.now();
+        }
+        
+        messageDiv.innerHTML = `
+            ${senderName ? `<span class="message-sender">${senderName}</span>` : ''}
+            ${text}
+            <div class="message-time">${timeString}</div>
+        `;
+        
+        messageContainer.appendChild(messageDiv);
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+
+    function sendMessage() {
+        const text = messageInput.value.trim();
+        if (text) {
+            const messageId = 'msg-' + Date.now();
+            const conversationKey = `${currentUser.id}_${currentClinic.id}`;
+            currentConversation = conversationKey;
+            
+            // Initialize conversation if it doesn't exist
+            if (!conversations[conversationKey]) {
+                conversations[conversationKey] = {
+                    clinicId: currentClinic.id,
+                    ownerName: currentUser.name,
+                    messages: []
+                };
+            }
+            
+            // Create message object
+            const newMessage = {
+                id: messageId,
+                sender: "user",
+                senderId: currentUser.id,
+                senderName: currentUser.name,
+                recipientId: currentClinic.id,
+                text: text,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Add to conversation
+            conversations[conversationKey].messages.push(newMessage);
+            
+            // Save to localStorage
+            localStorage.setItem('conversations', JSON.stringify(conversations));
+            
+            // Display message
+            addMessage('sent', text, currentUser.name, messageId);
+            messageInput.value = '';
+            
+            // Simulate clinic response
+            setTimeout(() => {
+                const responses = [
+                    "Thank you for your message. We'll get back to you shortly.",
+                    "Our clinic hours are " + currentClinic.hours,
+                    "For urgent matters, please call us at " + currentClinic.phone,
+                    "We've received your inquiry and will respond soon."
+                ];
+                
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                
+                const clinicMessage = {
+                    id: 'msg-' + Date.now(),
+                    sender: "clinic",
+                    senderId: currentClinic.id,
+                    senderName: currentClinic.name,
+                    recipientId: currentUser.id,
+                    text: randomResponse,
+                    timestamp: new Date().toISOString()
+                };
+                
+                conversations[conversationKey].messages.push(clinicMessage);
+                localStorage.setItem('conversations', JSON.stringify(conversations));
+                addMessage('received', randomResponse, currentClinic.name, clinicMessage.id);
+            }, 2000);
+        }
+    }
+
+    function sendVetMessage() {
+        const text = vetMessageInput.value.trim();
+        if (text) {
+            const messageId = 'msg-' + Date.now();
+            
+            // Initialize conversation if it doesn't exist
+            if (!conversations[currentConversation]) {
+                conversations[currentConversation] = {
+                    clinicId: currentUser.clinicId,
+                    ownerName: currentConversation.split('_')[0],
+                    messages: []
+                };
+            }
+            
+            // Create message object
+            const newMessage = {
+                id: messageId,
+                sender: "clinic",
+                senderId: currentUser.id,
+                senderName: currentUser.name,
+                recipientId: currentConversation.split('_')[0], // First part is user ID
+                text: text,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Add to conversation
+            conversations[currentConversation].messages.push(newMessage);
+            
+            // Save to localStorage
+            localStorage.setItem('conversations', JSON.stringify(conversations));
+            
+            // Display message
+            addMessage('sent', text, currentUser.name, messageId);
+            vetMessageInput.value = '';
+        }
+    }
+
+    function loginUser(email, password, isVet = false, vetData = null) {
+        // Create user object
+        let user;
+        
+        if (isVet && vetData) {
+            user = {
+                ...vetData,
+                isVet: true
+            };
+        } else {
+            // For pet owners
+            user = {
+                id: 'user-' + Date.now().toString(),
+                name: email.split('@')[0],
+                email,
+                phone: '+213 123 456 789',
+                isVet: false
+            };
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        currentUser = user;
+        
+        // Update UI
+        updateUserUI();
+        
+        // Close modal
+        authModal.style.display = 'none';
+        
+        // Show success message
+        showToast(`Welcome back, ${user.name}!`, "success");
+        
+        // Redirect to appropriate view
+        redirectAfterLogin();
+    }
+    
+    function signupUser(name, email, password, phone, isVet = false, vetData = null) {
+        // Create user object
+        let user;
+        
+        if (isVet && vetData) {
+            user = {
+                ...vetData,
+                isVet: true
+            };
+        } else {
+            user = {
+                id: 'user-' + Date.now().toString(),
+                name,
+                email,
+                phone: phone || '+213 123 456 789',
+                isVet: false
+            };
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        currentUser = user;
+        
+        // Update UI
+        updateUserUI();
+        
+        // Close modal
+        authModal.style.display = 'none';
+        
+        // Show success message
+        showToast(`Welcome to VetConnect, ${user.name}!`, "success");
+        
+        // Redirect to appropriate view
+        redirectAfterLogin();
+    }
+    
+    function redirectAfterLogin() {
+        if (currentUser.isVet) {
+            // For vets: show inbox directly
+            showVetInbox();
+        } else {
+            // For pet owners: show clinic listing
+            listingPage.style.display = 'block';
+            chatPage.style.display = 'none';
+            vetInboxPage.style.display = 'none';
+        }
+    }
+    
+    function logoutUser() {
+        localStorage.removeItem('currentUser');
+        currentUser = null;
+        updateUserUI();
+        backToList();
+    }
+    
+    function checkLoginStatus() {
+        const userData = localStorage.getItem('currentUser');
+        if (userData) {
+            currentUser = JSON.parse(userData);
+            updateUserUI();
+            
+            // Redirect to appropriate view
+            redirectAfterLogin();
+        } else {
+            // No user logged in - show listing page
+            listingPage.style.display = 'block';
+            chatPage.style.display = 'none';
+            vetInboxPage.style.display = 'none';
+        }
+        
+        // Load conversations
+        const savedConversations = localStorage.getItem('conversations');
+        if (savedConversations) {
+            conversations = JSON.parse(savedConversations);
+        }
+    }
+    
+    function updateUserUI() {
+        if (currentUser) {
+            // User is logged in
+            authButton.style.display = 'none';
+            userProfile.style.display = 'flex';
+            userName.textContent = currentUser.name;
+            userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+            
+            // Set color based on user type
+            userAvatar.style.backgroundColor = currentUser.isVet ? 'var(--vet-color)' : 'var(--owner-color)';
+            
+            // Show vet inbox button if vet
+            vetInboxButton.style.display = currentUser.isVet ? 'flex' : 'none';
+            
+            userProfile.onclick = () => {
+                if (confirm(`Log out ${currentUser.name}?`)) {
+                    logoutUser();
+                }
+            };
+        } else {
+            // User is not logged in
+            authButton.style.display = 'flex';
+            userProfile.style.display = 'none';
+            vetInboxButton.style.display = 'none';
+        }
+    }
+
+    function backToList() {
+        if (currentUser && currentUser.isVet) {
+            showVetInbox();
+        } else {
+            listingPage.style.display = 'block';
+            chatPage.style.display = 'none';
+            vetInboxPage.style.display = 'none';
+        }
+        messageInput.value = '';
+    }
+    
+    function backToClinics() {
+        if (currentUser && currentUser.isVet) {
+            showVetInbox();
+        } else {
+            listingPage.style.display = 'block';
+            chatPage.style.display = 'none';
+            vetInboxPage.style.display = 'none';
+        }
+    }
+
+    function showVetInbox() {
+        listingPage.style.display = 'none';
+        chatPage.style.display = 'none';
+        vetInboxPage.style.display = 'block';
+        
+        // Load vet's conversations
+        loadVetConversations();
+    }
+    
+    function loadVetConversations() {
+        const container = document.getElementById('conversationsList');
+        container.innerHTML = '';
+        
+        // Find all conversations where the vet's clinic is involved
+        for (const [key, conversation] of Object.entries(conversations)) {
+            // Check if conversation is for this vet's clinic
+            if (conversation.clinicId === currentUser.clinicId) {
+                const lastMessage = conversation.messages[conversation.messages.length - 1];
+                
+                const card = document.createElement('div');
+                card.className = 'conversation-card';
+                card.innerHTML = `
+                    <div class="conversation-header">
+                        <span class="user-name">${conversation.ownerName}</span>
+                        <span class="last-time">${new Date(lastMessage.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                    <div class="last-message">${lastMessage.text}</div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    openVetChat(key, conversation.ownerName);
+                });
+                
+                container.appendChild(card);
+            }
+        }
+        
+        // Show message if no conversations found
+        if (container.children.length === 0) {
+            container.innerHTML = '<div class="no-conversations">No conversations yet</div>';
+        }
+    }
+    
+    function openVetChat(conversationKey, ownerName) {
+        currentConversation = conversationKey;
+        
+        // Update UI
+        chatClinicName.textContent = ownerName;
+        
+        // Clear and show welcome message
+        messageContainer.innerHTML = `
+            <div class="welcome-message">
+                <p>Conversation with ${ownerName}</p>
+            </div>
+        `;
+        
+        // Show vet input area
+        document.getElementById('userChatInput').style.display = 'none';
+        document.getElementById('vetResponseControls').style.display = 'block';
+        
+        // Load existing messages
+        if (conversations[conversationKey] && conversations[conversationKey].messages) {
+            conversations[conversationKey].messages.forEach(msg => {
+                addMessage(
+                    msg.sender === 'user' ? 'received' : 'sent',
+                    msg.text,
+                    msg.senderName,
+                    msg.id
+                );
+            });
+        }
+        
+        // Switch to chat view
+        listingPage.style.display = 'none';
+        vetInboxPage.style.display = 'none';
+        chatPage.style.display = 'block';
+    }
+
+    function showToast(message, type = "info") {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        
+        const container = document.getElementById('toastContainer');
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+});
+
+</script>
+</body>
+</html>

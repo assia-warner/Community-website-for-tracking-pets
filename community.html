@@ -1,0 +1,51 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community Page</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="community-container">
+    <header>
+      <h1>🐾 VetHelp Community</h1>
+      <p>Ask. Help. Connect.</p>
+    </header>
+
+    <!-- 💡 Modern Search Bar -->
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="🔍 Search posts..." />
+    </div>
+
+    <main id="feed" class="feed-scroll">
+      <!-- Posts will load here -->
+    </main>
+
+    <p id="noResults" class="no-results" style="display: none;">🕵️‍♀️ No posts matched your search.</p>
+
+    <!-- Floating "+" button to add posts -->
+    <button id="addPostBtn" class="add-post-btn">+</button>
+
+    <!-- New post form (hidden by default) -->
+    <div class="new-post" style="display: none;">
+      <textarea id="postText" placeholder="What's on your mind?"></textarea>
+      <input type="file" id="postImage" accept="image/*">
+
+
+      <div class="post-buttons">
+        <button id="submitPostBtn" class="submit-btn">Post</button>
+        <button id="cancelPostBtn" class="cancel-btn">Cancel</button>
+      </div>
+      
+
+
+
+    </div>
+  </div>
+
+
+
+
+  <script src="community.js"></script>
+
+</body>
+</html>

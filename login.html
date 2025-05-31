@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form id="loginForm">
+    <h2>Login 🐾</h2>
+
+    <label>Username</label>
+    <input type="text" id="loginUsername" required>
+
+    <label>Password</label>
+    <input type="password" id="loginPassword" required>
+
+    <button type="submit">Login</button>
+
+    <p class="form-switch">Don’t have an account yet? <a href="signup.html">Sign up here</a></p>
+  </form>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const username = document.getElementById("loginUsername").value;
+      const password = document.getElementById("loginPassword").value;
+
+      const storedUser = localStorage.getItem("user_" + username);
+
+      if (!storedUser) {
+        alert("User not found!");
+        return;
+      }
+
+      const userData = JSON.parse(storedUser);
+
+      if (userData.password !== password) {
+        alert("Incorrect password!");
+        return;
+      }
+
+      alert(`Welcome back ${userData.type === "vet" ? "Dr. 🩺" : "Pet Lover 🐶"} ${username}`);
+      localStorage.setItem("loggedInUser", username);
+      window.location.href = "community.html";
+    });
+  </script>
+
+</body>
+</html>

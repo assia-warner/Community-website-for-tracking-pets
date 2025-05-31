@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0fdf4;
+      padding: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #2f855a;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.2em;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .user-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+    .user-card:hover {
+      transform: translateY(-2px);
+    }
+    .user-card p {
+      margin: 8px 0;
+      color: #4a5568;
+    }
+    .user-actions {
+      margin-top: 15px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 15px;
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .approve {
+      background-color: #38a169;
+      color: white;
+    }
+    .reject {
+      background-color: #e53e3e;
+      color: white;
+    }
+    .diploma-btn {
+      background-color: #4299e1;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .diploma-btn::before {
+      content: '📄';
+      font-size: 1.1em;
+    }
+    #user-list {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .loading-message {
+      text-align: center;
+      color: #718096;
+      font-style: italic;
+    }
+    .error-message {
+      color: #e53e3e;
+      text-align: center;
+      padding: 20px;
+      background: #fff5f5;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📋 Vet Registration Approvals</h1>
+  <div id="user-list">Loading pending requests...</div>
+
+  <script>
+    const API_BASE = 'http://localhost:3000';
+
+    async function fetchUsers() {
+      try {
+        const res = await fetch(`${API_BASE}/pending-users`);
+        const users = await res.json();
+
+        const container = document.getElementById('user-list');
+        container.innerHTML = '';
+
+        if (users.length === 0) {
+          container.innerHTML = '<p class="loading-message">No pending verification requests 🎉</p>';
+          return;
+        }
+
+        users.forEach(user => {
+          const div = document.createElement('div');
+          div.className = 'user-card';
+          
+          // Fake diploma button (appears for all users)
+          div.innerHTML = `
+            <p><strong>👤 Name:</strong> ${user.name}</p>
+            <p><strong>📧 Email:</strong> ${user.email}</p>
+            <div class="user-actions">
+              <button class="diploma-btn" onclick="showDiploma()">View Credentials</button>
+              <button class="approve" onclick="approveUser('${user._id}')">Approve</button>
+              <button class="reject" onclick="rejectUser('${user._id}')">Reject</button>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        document.getElementById('user-list').innerHTML = `
+          <div class="error-message">
+            ❌ Error loading requests - Please refresh the page
+          </div>
+        `;
+        console.error('Failed to fetch users:', err);
+      }
+    }
+
+    // Fake diploma viewer
+    function showDiploma() {
+      alert("✅ Verified Credentials:\n\n• Veterinary License\n• Academic Degree\n• Government ID\n\n(Preview simulation)");
+    }
+
+    async function approveUser(id) {
+      await fetch(`${API_BASE}/approve-user/${id}`, { method: 'PUT' });
+      fetchUsers();
+    }
+
+    async function rejectUser(id) {
+      await fetch(`${API_BASE}/reject-user/${id}`, { method: 'DELETE' });
+      fetchUsers();
+    }
+
+    fetchUsers();
+  </script>
+</body>
+</html>

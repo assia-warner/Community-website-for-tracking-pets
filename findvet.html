@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find a Vet | Pawsy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+
+
+
+
+
+
+
+
+
+
+.header-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.header-center h1 {
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+
+.header-center p {
+  font-size: 14px;
+  margin-top: 0;
+  color: white;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header styles (consistent with your main site) */
+    .welcome-header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: relative; /* add this */
+    }
+    
+
+
+    .header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.welcome-header {
+  width: 100vw;
+  height: 120px;
+  background-color: #4CAF50;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding-bottom: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.nav-links a {
+  color: rgb(36, 127, 57);
+  margin: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.user-login {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 28px;
+  color: white;
+  text-decoration: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .header-content h1 {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .nav-links a {
+  color: white;
+  margin: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+}
+    
+    .nav-links a:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+    
+    .user-login {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 28px;
+  color: white;
+  text-decoration: none;
+}
+    
+    /* Main content - full width */
+    .full-map-section {
+      flex: 1;
+      width: 100%;
+      max-width: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .map-header {
+      background-color: white;
+      padding: 25px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .map-header h1 {
+      color: #2E7D32;
+      margin-bottom: 15px;
+      font-size: 32px;
+    }
+    
+    .map-controls {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto 20px;
+    }
+    
+    #location-search {
+      flex: 1;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      min-width: 300px;
+      transition: border-color 0.3s;
+    }
+    
+    #location-search:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+    
+    #search-button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 0 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    
+    #search-button:hover {
+      background: #3e8e41;
+    }
+    
+    /* Full-screen map */
+    #vet-map {
+  height: 500px; /* Make sure the map has visible height */
+  width: 100%;
+  margin: 2rem auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+    
+    /* Vet listings */
+    .vet-listings-container {
+      background: white;
+      padding: 30px;
+      width: 100%;
+    }
+    
+    .vet-listings-title {
+      color: #2E7D32;
+      margin-bottom: 20px;
+      font-size: 24px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .vet-listings {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .vet-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .vet-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .vet-card h3 {
+      color: #2E7D32;
+      margin-bottom: 10px;
+    }
+    
+    .vet-card p {
+      margin-bottom: 8px;
+      color: #555;
+    }
+    
+    .vet-card i {
+      color: #4CAF50;
+      width: 20px;
+      margin-right: 8px;
+    }
+    
+    .directions-button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 15px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s;
+    }
+    
+    .directions-button:hover {
+      background: #3e8e41;
+    }
+    
+    .map-disclaimer {
+      font-size: 13px;
+      color: #777;
+      margin-top: 15px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .map-controls {
+        flex-direction: column;
+        padding: 0 20px;
+      }
+      
+      #location-search {
+        min-width: auto;
+      }
+      
+      #search-button {
+        padding: 15px;
+      }
+      
+      .vet-listings {
+        grid-template-columns: 1fr;
+      }
+      
+      .welcome-header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+      }
+      
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+    <header class="welcome-header">
+        <div class="header-center">
+          <h1>🐾 PAWSY 🐾</h1>
+          <p>Ask. Help. Connect.</p>
+          <nav class="nav-links">
+            <a href="askvet.html">Ask Vet</a>
+            <a href="community.html">Community</a>
+            <a href="findvet.html">Find Vet</a>
+            <a href="quickhelp.html">Quick Help</a>
+          </nav>
+        </div>
+        <a href="login.html" class="user-login">
+          <i class="fas fa-user-circle"></i>
+        </a>
+      </header>
+      
+
+  <main class="full-map-section">
+    <div class="map-header">
+      <h1>Find a Vet Near You</h1>
+      <div class="map-controls">
+        <input type="text" id="location-search" placeholder="Enter your city, zip code, or address">
+        <button id="search-button">
+          <i class="fas fa-search"></i> Search
+        </button>
+      </div>
+      <p class="map-disclaimer">
+        Location searches use OpenStreetMap's Nominatim service. By searching, you agree to their 
+        <a href="https://operations.osmfoundation.org/policies/nominatim/" target="_blank">usage policy</a>.
+      </p>
+    </div>
+    
+    <div id="vet-map"></div>
+    
+    <div class="vet-listings-container">
+      <h2 class="vet-listings-title">Veterinary Clinics Nearby</h2>
+      <div class="vet-listings" id="vet-listings">
+        <!-- Vet listings will appear here via JavaScript -->
+      </div>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize map with default view
+    const map = L.map('vet-map').setView([39.8283, -98.5795], 4);
+
+    // Add tile layer (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    // Sample vet data (replace with your actual data)
+    const vetClinics = [
+      {
+        name: "Paws & Care Animal Hospital",
+        address: "123 Pet Street, New York, NY 10001",
+        phone: "(212) 555-1234",
+        hours: "Mon-Fri: 8AM-8PM | Sat-Sun: 9AM-5PM",
+        emergency: true,
+        lat: 40.7128,
+        lng: -74.0060
+      },
+      {
+        name: "Greenwood Veterinary Clinic",
+        address: "456 Dog Lane, Chicago, IL 60601",
+        phone: "(312) 555-5678",
+        hours: "Mon-Sat: 7AM-9PM | Sun: 10AM-4PM",
+        emergency: false,
+        lat: 41.8781,
+        lng: -87.6298
+      },
+      {
+        name: "Oceanview Pet Hospital",
+        address: "789 Cat Avenue, Los Angeles, CA 90012",
+        phone: "(213) 555-9012",
+        hours: "24/7 Emergency Service",
+        emergency: true,
+        lat: 34.0522,
+        lng: -118.2437
+      }
+    ];
+
+    // Custom vet icons
+    const vetIcon = L.icon({
+      iconUrl: 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png',
+      iconSize: [32, 32]
+    });
+    
+    const emergencyIcon = L.icon({
+      iconUrl: 'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png',
+      iconSize: [40, 40]
+    });
+
+    // Add markers to map and create listings
+    const vetListings = document.getElementById('vet-listings');
+    
+    vetClinics.forEach(vet => {
+      // Add map marker
+      const marker = L.marker([vet.lat, vet.lng], {
+        icon: vet.emergency ? emergencyIcon : vetIcon
+      })
+      .addTo(map)
+      .bindPopup(`
+        <b>${vet.name}</b><br>
+        <small>${vet.address}</small><br>
+        <i class="fas fa-phone"></i> ${vet.phone}<br>
+        ${vet.emergency ? '<span style="color:red"><i class="fas fa-cross"></i> Emergency Services</span>' : ''}
+      `);
+
+      // Add to listings
+      const vetCard = document.createElement('div');
+      vetCard.className = 'vet-card';
+      vetCard.innerHTML = `
+        <h3>${vet.name} ${vet.emergency ? '<span style="color:red">(Emergency)</span>' : ''}</h3>
+        <p><i class="fas fa-map-marker-alt"></i> ${vet.address}</p>
+        <p><i class="fas fa-phone"></i> ${vet.phone}</p>
+        <p><i class="fas fa-clock"></i> ${vet.hours}</p>
+        <button class="directions-button" data-lat="${vet.lat}" data-lng="${vet.lng}">
+          <i class="fas fa-directions"></i> Get Directions
+        </button>
+      `;
+      vetListings.appendChild(vetCard);
+    });
+
+    // Search functionality using Nominatim
+    document.getElementById('search-button').addEventListener('click', searchLocation);
+    document.getElementById('location-search').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') searchLocation();
+    });
+
+    function searchLocation() {
+      const location = document.getElementById('location-search').value.trim();
+      const searchBtn = document.getElementById('search-button');
+      
+      if (!location) {
+        alert("Please enter a location");
+        return;
+      }
+
+      // Show loading state
+      searchBtn.disabled = true;
+      const originalText = searchBtn.innerHTML;
+      searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+
+      // Nominatim API call
+      fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.length > 0) {
+            const { lat, lon, display_name } = data[0];
+            map.setView([lat, lon], 13);
+            
+            // Add new marker for searched location
+            L.marker([lat, lon], {icon: L.divIcon({className: 'search-marker'})})
+              .addTo(map)
+              .bindPopup(`<b>Your Search</b><br>${display_name}`)
+              .openPopup();
+          } else {
+            alert("Location not found. Try a nearby city or zip code.");
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching location:", error);
+          alert("Error searching location. Please try again.");
+        })
+        .finally(() => {
+          searchBtn.disabled = false;
+          searchBtn.innerHTML = originalText;
+        });
+    }
+
+    // Directions button handler
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.directions-button');
+      if (btn) {
+        const lat = btn.getAttribute('data-lat');
+        const lng = btn.getAttribute('data-lng');
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pawsy - Your Pet's Health Companion</title>
+  
+  <!-- Font and Icon Preload for Performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    /* Small enhancements (remove or move to your CSS file if needed) */
+    .cta-button:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="community-container">
+    
+    <!-- Header -->
+    <header class="welcome-header" role="banner">
+      <div class="header-content">
+        <h1 aria-label="Pawsy Logo">🐾 PAWSY 🐾</h1>
+        <p>Ask. Help. Connect.</p>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="nav-links" role="navigation" aria-label="Main Navigation">
+        <a href="askvet.html">Ask Vet</a>
+        <a href="community.html">Community</a>
+        <a href="findvet.html">Find Vet</a>
+        <a href="quickhelp.html">Quick Help</a>
+      </nav>
+
+      <!-- User Login -->
+      <a href="login.html" class="user-login" aria-label="Login">
+        <i class="fas fa-user-circle user-icon" aria-hidden="true"></i>
+      </a>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Hero Section -->
+      <section class="hero" aria-labelledby="hero-title">
+        <h2 id="hero-title">Welcome to Pawsy</h2>
+        <p class="hero-subtitle">Your pet's health companion. Ask questions, get advice, find help.</p>
+
+        <!-- CTA Buttons -->
+        <div class="cta-buttons">
+          <a href="askvet.html" class="cta-button primary">Ask a Vet Now</a>
+          <a href="community.html" class="cta-button secondary">Join Our Community</a>
+        </div>
+
+        <!-- Features Section -->
+        <section class="features" aria-label="Platform Features">
+          <div class="feature-card">
+            <i class="fas fa-comment-medical" aria-hidden="true"></i>
+            <h3>Expert Advice</h3>
+            <p>Get answers from licensed veterinarians within hours.</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-users" aria-hidden="true"></i>
+            <h3>Pet Community</h3>
+            <p>Connect with other pet owners facing similar challenges.</p>
+          </div>
+          <div class="feature-card">
+            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+            <h3>Find Vets</h3>
+            <p>Locate nearby veterinary clinics and emergency services.</p>
+          </div>
+        </section>
+
+        <!-- Emergency Banner -->
+        <div class="emergency-banner" role="alert">
+          <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+          <p>
+            For pet emergencies, call your local vet immediately or visit our 
+            <a href="emergency.html">Emergency Guide</a>.
+          </p>
+        </div>
+
+        <!-- Daily Tip -->
+        <div class="daily-tip" aria-label="Daily Tip">
+          <strong>Today's Tip:</strong> Always keep chocolate away from dogs—it's toxic!
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="testimonials" aria-labelledby="testimonials-title">
+        <h2 id="testimonials-title">What Pet Owners Say</h2>
+        <div class="testimonial-cards">
+          <div class="testimonial">
+            <div class="rating" aria-label="5 out of 5 stars">★★★★★</div>
+            <p>"Pawsy saved my dog's life when I noticed unusual symptoms and got immediate vet advice!"</p>
+            <div class="user">- Dania.S</div>
+          </div>
+          <div class="testimonial">
+            <div class="rating" aria-label="4 out of 5 stars">★★★★☆</div>
+            <p>"The community helped me find the perfect diet for my cat with allergies."</p>
+            <div class="user">- Loua.W</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer (Optional) -->
+    <footer role="contentinfo" class="footer">
+      <p>&copy; 2025 Pawsy. All rights reserved.</p>
+    </footer>
+
+  </div>
+</body>
+</html>
